@@ -1,0 +1,48 @@
+import os
+import shutil
+
+def organize_files(source_dir):
+    try:
+        # Check if the source directory exists
+        if not os.path.exists(source_dir):
+            print(f"Source directory '{source_dir}' does not exist.")
+            return
+        
+        # Get the list of files in the source directory
+        file_list = os.listdir(source_dir)
+        
+        # Create a dictionary to hold file types and corresponding directories
+        file_types = {}
+        
+        # Iterate through each file in the source directory
+        for filename in file_list:
+            # Skip directories
+            if os.path.isdir(os.path.join(source_dir, filename)):
+                continue
+            
+            # Get the file extension
+            file_extension = os.path.splitext(filename)[1][1:].lower()
+            
+            # If the file extension is not empty, sort the file
+            if file_extension:
+                # Create a directory if it doesn't exist for the file type
+                if file_extension not in file_types:
+                    file_types[file_extension] = os.path.join(source_dir, file_extension.upper() + "_Files")
+                    os.makedirs(file_types[file_extension])
+                
+                # Move the file to the corresponding directory
+                source_path = os.path.join(source_dir, filename)
+                dest_path = os.path.join(file_types[file_extension], filename)
+                shutil.move(source_path, dest_path)
+                print(f"File '{filename}' moved to '{file_extension.upper()}_Files' directory.")
+        
+        print("File organization completed successfully.")
+        
+    except Exception as e:
+        print(f"An error occurred during file organization: {str(e)}")
+
+if __name__ == "__main__":
+    # Replace 'source_directory' with the path of the directory you want to organize
+    source_directory = '/path/to/source_directory'
+    
+    organize_files(source_directory)
